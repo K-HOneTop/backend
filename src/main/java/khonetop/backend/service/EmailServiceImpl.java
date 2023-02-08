@@ -1,7 +1,6 @@
 package khonetop.backend.service;
 
 import lombok.RequiredArgsConstructor;
-import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -18,20 +17,33 @@ import java.util.Random;
 public class EmailServiceImpl implements EmailService{
 
     private final JavaMailSender emailSender;
+    private final RedisUtil redisUtil;
     public static final String emailCode = createKey();
 
     @Override
-    public String sendMessage(String rcv) throws Exception {
+    public void sendMessage(String rcv) throws Exception {
         MimeMessage message = createMessage(rcv);
+        if (redisUtil.existData(rcv)) {
+            redisUtil.deleteData(rcv);
+        }
         try {
             emailSender.send(message);
         } catch (MailException e) {
             e.printStackTrace();
             throw new IllegalArgumentException();
         }
-
-        return emailCode;
+        redisUtil.setDataExpire(rcv, emailCode, 60 * 5L);
     }
+
+    @Override
+    public boolean verifyEmailCode(String email, String code) {
+        String codeFoundByEmail = redisUtil.getData(email);
+        if (codeFoundByEmail == null) {
+            return false;
+        }
+        return redisUtil.getData(email).equals(code);
+    }
+
 
     private MimeMessage createMessage(String rcv) throws Exception {
         MimeMessage message = emailSender.createMimeMessage();
@@ -53,7 +65,7 @@ public class EmailServiceImpl implements EmailService{
     private static String createKey(){
         StringBuffer key = new StringBuffer();
         Random random = new Random();
-        for(int i=0;i<6;i++){ //6자리 인증번호
+        for(int i=0;i<6;i++){ //6자리 인증번호, 알파벳을 섞게 될 수도 있어서 한개씩 만들었음
             int index = random.nextInt(10); //0~9까지 랜덤
             key.append(index);
         }
