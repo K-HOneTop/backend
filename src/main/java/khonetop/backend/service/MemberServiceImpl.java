@@ -3,6 +3,7 @@ package khonetop.backend.service;
 import khonetop.backend.config.auth.UserDetailsImpl;
 import khonetop.backend.domain.Member;
 import khonetop.backend.dto.MemberSignInRequestDto;
+import khonetop.backend.dto.MemberSignInResponseDto;
 import khonetop.backend.dto.MemberSignUpRequestDto;
 import khonetop.backend.repository.JpaMemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -43,15 +44,18 @@ public class MemberServiceImpl implements MemberService{
     }
 
     @Override
-    public String signIn(MemberSignInRequestDto request) { //이해 완벽하게 못함. 정리가 필요
+    public MemberSignInResponseDto signIn(MemberSignInRequestDto request) { //이해 완벽하게 못함. 정리가 필요
         //현재 비밀번호가 다르면 오류가 터짐 -> 예외처리 해줘야함!!
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
-
         UserDetailsImpl principal = (UserDetailsImpl) authentication.getPrincipal();
-        return principal.getUsername();
+        Optional<Member> byEmail = memberRepository.findByEmail(principal.getUsername());
+        if (byEmail.isEmpty()) {
+            return null;
+        }
+        return new MemberSignInResponseDto(principal.getUsername(), byEmail.get().getNickname());
     }
 
     public Optional<Member> findMemberByEmail(String email){

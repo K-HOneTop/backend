@@ -45,7 +45,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/","/img/**", "/lib/**", "/member/**", "/mail/**","/scss/**").permitAll()
+                .antMatchers().authenticated()
                 .anyRequest().authenticated();
 
         http.formLogin() //로그인

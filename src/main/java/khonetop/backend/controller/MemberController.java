@@ -1,6 +1,8 @@
 package khonetop.backend.controller;
 
+import khonetop.backend.domain.Member;
 import khonetop.backend.dto.MemberSignInRequestDto;
+import khonetop.backend.dto.MemberSignInResponseDto;
 import khonetop.backend.dto.MemberSignUpRequestDto;
 import khonetop.backend.service.MemberServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.validation.Valid;
+import java.util.Optional;
 
 @Slf4j
 @Controller
@@ -42,10 +45,10 @@ public class MemberController {
         if (bindingResult.hasErrors()) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
-        String memberEmail = memberService.signIn(form);
-        if (memberEmail.isEmpty()) {
+        MemberSignInResponseDto memberSignInResponseDto = memberService.signIn(form);
+        if (memberSignInResponseDto.equals(null)) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity(memberEmail, HttpStatus.OK);
+        return new ResponseEntity(memberSignInResponseDto, HttpStatus.OK);
     }
 }
