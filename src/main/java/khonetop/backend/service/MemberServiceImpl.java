@@ -44,6 +44,7 @@ public class MemberServiceImpl implements MemberService{
 
     @Override
     public String signIn(MemberSignInRequestDto request) { //이해 완벽하게 못함. 정리가 필요
+        //현재 비밀번호가 다르면 오류가 터짐 -> 예외처리 해줘야함!!
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
 
