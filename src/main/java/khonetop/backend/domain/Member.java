@@ -17,6 +17,7 @@ public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long memberId;
+    private String name;
     private String nickname;
     private String email; //로그인할 때 id로 사용됨
 //    private boolean mail_auth; //회원가입 할 때 이메일 인증을 하지 않으면 가입이 안돼서 일단 뺌
@@ -27,7 +28,8 @@ public class Member {
 //    private Timestamp createDate; //회원가입한 날짜
 
     @Builder
-    public Member(String nickname, String email, String password) {
+    public Member(String name, String nickname, String email, String password) {
+        this.name = name;
         this.nickname = nickname;
         this.email = email;
         this.password = password;

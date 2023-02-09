@@ -1,21 +1,25 @@
 package khonetop.backend.config;
 
-import khonetop.backend.config.auth.UserDetailsServiceImpl;
+import khonetop.backend.config.security.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 @Configuration
 @EnableWebSecurity //security 필터가 등록됨
@@ -28,7 +32,6 @@ public class SecurityConfig {
     public SecurityConfig(UserDetailsServiceImpl userDetailsService) {
         this.userDetailsService = userDetailsService;
     }
-
     @Bean
     public PasswordEncoder getPasswordEncoder(){
         return new BCryptPasswordEncoder();
@@ -49,10 +52,18 @@ public class SecurityConfig {
                 .anyRequest().authenticated();
 
         http.formLogin() //로그인
-                .loginPage("/member")
+                .loginPage("/member/signin")
                 .usernameParameter("email")
                 .passwordParameter("password")
                 .loginProcessingUrl("member")
+                .failureHandler(
+                        new AuthenticationFailureHandler() {
+                            @Override
+                            public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
+                                response.sendRedirect("/member/signin/fail");
+                            }
+                        }
+                )
                 .permitAll();
 
         return http.build();

@@ -1,4 +1,4 @@
-package khonetop.backend.config.auth;
+package khonetop.backend.config.security;
 
 import khonetop.backend.domain.Member;
 import khonetop.backend.repository.JpaMemberRepository;
@@ -9,7 +9,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
 @Slf4j
 @Service
 @RequiredArgsConstructor

@@ -1,4 +1,4 @@
-package khonetop.backend.config.auth;
+package khonetop.backend.config.security;
 
 import khonetop.backend.domain.Member;
 import lombok.AllArgsConstructor;

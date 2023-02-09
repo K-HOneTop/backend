@@ -1,6 +1,6 @@
 package khonetop.backend.service;
 
-import khonetop.backend.config.auth.UserDetailsImpl;
+import khonetop.backend.config.security.UserDetailsImpl;
 import khonetop.backend.domain.Member;
 import khonetop.backend.dto.MemberSignInRequestDto;
 import khonetop.backend.dto.MemberSignInResponseDto;
@@ -9,10 +9,10 @@ import khonetop.backend.repository.JpaMemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -35,6 +35,7 @@ public class MemberServiceImpl implements MemberService{
             return false;
         }
         Member member = Member.builder().email(request.getEmail())
+                .name(request.getName())
                 .nickname(request.getNickname())
                 .password(request.getPassword())
                 .build();
@@ -55,7 +56,7 @@ public class MemberServiceImpl implements MemberService{
         if (byEmail.isEmpty()) {
             return null;
         }
-        return new MemberSignInResponseDto(principal.getUsername(), byEmail.get().getNickname());
+        return new MemberSignInResponseDto(byEmail.get().getName(), principal.getUsername(), byEmail.get().getNickname());
     }
 
     public Optional<Member> findMemberByEmail(String email){

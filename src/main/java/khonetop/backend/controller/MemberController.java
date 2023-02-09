@@ -10,12 +10,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
+import javax.security.auth.login.FailedLoginException;
 import javax.validation.Valid;
 import java.util.Optional;
 
@@ -50,5 +49,11 @@ public class MemberController {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity(memberSignInResponseDto, HttpStatus.OK);
+    }
+
+    @GetMapping("/signin/fail") //get 방식이 안된다넹 왜지??
+    public ResponseEntity loginFail() {
+        log.info("비밀번호가 일치하지 않음");
+        return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
 }
