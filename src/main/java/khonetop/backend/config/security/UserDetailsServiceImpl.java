@@ -1,7 +1,7 @@
 package khonetop.backend.config.security;
 
-import khonetop.backend.domain.Member;
-import khonetop.backend.repository.JpaMemberRepository;
+import khonetop.backend.member.domain.Member;
+import khonetop.backend.member.repository.JpaMemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;

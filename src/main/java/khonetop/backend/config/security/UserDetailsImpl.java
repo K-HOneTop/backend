@@ -1,6 +1,6 @@
 package khonetop.backend.config.security;
 
-import khonetop.backend.domain.Member;
+import khonetop.backend.member.domain.Member;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 @AllArgsConstructor
-public class UserDetailsImpl implements UserDetails {
+public class UserDetailsImpl implements UserDetails { //security 사용하기 위한 UserDetails
 
     private static final String ROLE_PREFIX = "ROLE_";
     private Member member;

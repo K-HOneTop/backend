@@ -1,4 +1,4 @@
-package khonetop.backend.service;
+package khonetop.backend.member.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,8 +14,7 @@ import java.util.Random;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class EmailServiceImpl implements EmailService{
-
+public class EmailServiceImpl implements EmailService{ //email 인증 코드 관련 서비스
     private final JavaMailSender emailSender;
     private final RedisUtil redisUtil;
     public static final String emailCode = createKey();

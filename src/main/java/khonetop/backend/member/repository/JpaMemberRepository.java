@@ -1,6 +1,6 @@
-package khonetop.backend.repository;
+package khonetop.backend.member.repository;
 
-import khonetop.backend.domain.Member;
+import khonetop.backend.member.domain.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

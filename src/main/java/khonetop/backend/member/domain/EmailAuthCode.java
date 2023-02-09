@@ -1,4 +1,4 @@
-package khonetop.backend.domain;
+package khonetop.backend.member.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

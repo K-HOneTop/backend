@@ -1,15 +1,14 @@
-package khonetop.backend.service;
+package khonetop.backend.member.service;
 
 import khonetop.backend.config.security.UserDetailsImpl;
-import khonetop.backend.domain.Member;
-import khonetop.backend.dto.MemberSignInRequestDto;
-import khonetop.backend.dto.MemberSignInResponseDto;
-import khonetop.backend.dto.MemberSignUpRequestDto;
-import khonetop.backend.repository.JpaMemberRepository;
+import khonetop.backend.member.domain.Member;
+import khonetop.backend.member.dto.MemberSignInRequestDto;
+import khonetop.backend.member.dto.MemberSignInResponseDto;
+import khonetop.backend.member.dto.MemberSignUpRequestDto;
+import khonetop.backend.member.repository.JpaMemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,7 +20,7 @@ import java.util.Optional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class MemberServiceImpl implements MemberService{
+public class MemberServiceImpl implements MemberService{ //로그인, 회원 가입 관련 서비스
 
     private final JpaMemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;

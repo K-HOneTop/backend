@@ -1,4 +1,4 @@
-package khonetop.backend.dto;
+package khonetop.backend.member.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

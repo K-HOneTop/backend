@@ -1,4 +1,4 @@
-package khonetop.backend.domain;
+package khonetop.backend.member.domain;
 
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -12,7 +12,7 @@ import java.sql.Timestamp;
 @Getter
 @NoArgsConstructor
 @ToString
-public class Member {
+public class Member { //실제 DB와 연결된 member
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

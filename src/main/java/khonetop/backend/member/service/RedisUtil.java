@@ -1,4 +1,4 @@
-package khonetop.backend.service;
+package khonetop.backend.member.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -9,10 +9,9 @@ import java.time.Duration;
 
 @RequiredArgsConstructor
 @Service
-public class RedisUtil {
+public class RedisUtil {     //redis 기본적인 CRUD 로직
     private final StringRedisTemplate template;
 
-    //기본적인 CRUD 로직
     public String getData(String key) {
         ValueOperations<String, String> valueOperations = template.opsForValue();
         return valueOperations.get(key);
