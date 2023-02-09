@@ -46,25 +46,30 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
         http
+                .csrf().disable()
                 .authorizeRequests()
                 .antMatchers().authenticated()
-                .anyRequest().authenticated();
+                .anyRequest().permitAll()
+                .and()
+                .formLogin()
+                .loginPage("/login")
+                .loginProcessingUrl("/member/signin")
+                .defaultSuccessUrl("/");
 
-        http.formLogin() //로그인
-                .loginPage("/member/signin")
-                .usernameParameter("email")
-                .passwordParameter("password")
-                .loginProcessingUrl("member")
-                .failureHandler(
-                        new AuthenticationFailureHandler() {
-                            @Override
-                            public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
-                                response.sendRedirect("/member/signin/fail");
-                            }
-                        }
-                )
-                .permitAll();
+
+//        http
+//                .authorizeRequests()
+//                .antMatchers().authenticated()
+//                .anyRequest().authenticated();
+//
+//        http.formLogin("/login") //로그인
+//                .loginPage("/member/signin")
+//                .usernameParameter("email")
+//                .passwordParameter("password")
+//                .loginProcessingUrl("/member/signin")
+//                .permitAll();
 
         return http.build();
     }
