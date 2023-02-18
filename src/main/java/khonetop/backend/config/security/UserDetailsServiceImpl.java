@@ -9,6 +9,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -20,10 +22,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     //username 이 DB에 있는지는 직접 확인해줘야함
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Member member = memberRepository.findByEmail(username).orElseThrow(
-                () -> new UsernameNotFoundException("Invalid authentication!")
-        );
+        Optional<Member> member = memberRepository.findByEmail(username);
 
-        return new UserDetailsImpl(member);
+        if (member.isEmpty()) {
+            return null;
+        }
+        return new UserDetailsImpl(member.get());
     }
 }
