@@ -8,6 +8,10 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+/**
+ * 자격증 회차 관련 상세 정보
+ * (토익 1900회차와 같은 상세 자격증 - 즐겨찾기에 필요한 도메인)
+ */
 @Entity
 @Table(name = "certificate_detail")
 @Getter
@@ -23,7 +27,8 @@ public class CertificateDetail {
     private LocalDateTime addStartDate;
     private LocalDateTime addEndDate;
     private LocalDate examDate;
-    private Integer round;
+    private LocalDate announceDate;
+    private Integer round; //회차 정보
 
     @ManyToOne
     @JoinColumn(name = "cer_id")
