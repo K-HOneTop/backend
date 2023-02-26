@@ -29,7 +29,7 @@ public class EmailServiceImpl implements EmailService{ //email 인증 코드 관
             emailSender.send(message);
         } catch (MailException e) {
             e.printStackTrace();
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(); //메일 안보내질 경우 예외처리 필요 (존재하지 않는 메일이거나..)
         }
         redisUtil.setDataExpire(rcv, emailCode, 60 * 5L);
     }

@@ -13,6 +13,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Optional;
 
 @Slf4j
 @Controller
@@ -21,6 +22,14 @@ import javax.validation.Valid;
 public class MemberController {
 
     private final MemberServiceImpl memberService;
+
+    @PostMapping("/signup/{email}")
+    public ResponseEntity isDuplicateEmail(@PathVariable("email") String email) { //이메일 중복 체크
+        boolean existMember = memberService.isExistMember(email);
+        if (existMember) {
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        } else return new ResponseEntity(HttpStatus.OK);
+    }
 
     @PostMapping("/signup") //회원가입
     public ResponseEntity signUp(@Valid @RequestBody MemberSignUpRequestDto form, BindingResult bindingResult) {
@@ -40,8 +49,8 @@ public class MemberController {
         if (bindingResult.hasErrors()) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
-        MemberSignInResponseDto memberSignInResponseDto = memberService.signIn(form);
-        if (memberSignInResponseDto.equals(null)) {
+        Optional<MemberSignInResponseDto> memberSignInResponseDto = memberService.signIn(form);
+        if (memberSignInResponseDto==null) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity(memberSignInResponseDto, HttpStatus.OK);

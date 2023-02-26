@@ -9,6 +9,7 @@ import khonetop.backend.member.repository.JpaMemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -28,9 +29,8 @@ public class MemberServiceImpl implements MemberService{ //로그인, 회원 가
 
     @Override
     public boolean signUp(MemberSignUpRequestDto request) {
-        boolean isExistMember = memberRepository.existsByEmail(request.getEmail());
-        if (isExistMember) {
-            log.info("이미 존재하는 회원");
+        if (isDuplicateNickname(request.getNickname())) {
+            log.info("이미 존재하는 닉네임");
             return false;
         }
         Member member = Member.builder().email(request.getEmail())
@@ -44,19 +44,43 @@ public class MemberServiceImpl implements MemberService{ //로그인, 회원 가
     }
 
     @Override
-    public MemberSignInResponseDto signIn(MemberSignInRequestDto request) { //이해 완벽하게 못함. 정리가 필요
-        //현재 비밀번호가 다르면 오류가 터짐 -> 예외처리 해줘야함!!
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+    public Optional<MemberSignInResponseDto> signIn(MemberSignInRequestDto request) {
+        try {
+            Optional<Member> byEmail = memberRepository.findByEmail(request.getEmail());
+            if (byEmail.isEmpty()) {
+                return null;
+            }
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            UserDetailsImpl principal = (UserDetailsImpl) authentication.getPrincipal();
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        UserDetailsImpl principal = (UserDetailsImpl) authentication.getPrincipal();
-        Optional<Member> byEmail = memberRepository.findByEmail(principal.getUsername());
-        if (byEmail.isEmpty()) {
+            return Optional.of(new MemberSignInResponseDto(byEmail.get().getName(), principal.getUsername(), byEmail.get().getNickname()));
+        } catch (BadCredentialsException e) {
             return null;
         }
-        return new MemberSignInResponseDto(byEmail.get().getName(), principal.getUsername(), byEmail.get().getNickname());
     }
+
+    @Override
+    public boolean isExistMember(String email){
+        boolean isExistMember = memberRepository.existsByEmail(email);
+        if (isExistMember) {
+            log.info("이미 존재하는 회원");
+            return true;
+        }
+        return false;
+    }
+
+
+    @Override
+    public boolean isDuplicateNickname(String nickname){
+        Optional<Member> member = memberRepository.findByNickname(nickname);
+        if(member.isPresent()){
+            return true;
+        }
+        return false;
+    }
+
 
     public Optional<Member> findMemberByEmail(String email){
         return null;
