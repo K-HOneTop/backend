@@ -47,7 +47,7 @@ public class MemberServiceImpl implements MemberService{ //로그인, 회원 가
     public Optional<MemberSignInResponseDto> signIn(MemberSignInRequestDto request) {
         try {
             Optional<Member> byEmail = memberRepository.findByEmail(request.getEmail());
-            if (byEmail.isEmpty()) {
+            if (!byEmail.isPresent()) {
                 return null;
             }
             Authentication authentication = authenticationManager.authenticate(

@@ -50,7 +50,7 @@ public class MemberController {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
         Optional<MemberSignInResponseDto> memberSignInResponseDto = memberService.signIn(form);
-        if (memberSignInResponseDto==null) {
+        if (!memberSignInResponseDto.isPresent()) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity(memberSignInResponseDto, HttpStatus.OK);

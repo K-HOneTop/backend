@@ -27,6 +27,8 @@ public class Member { //실제 DB와 연결된 member
 //    @CreationTimestamp
 //    private Timestamp createDate; //회원가입한 날짜
 
+    //sns 추가해야 함 (sns 로그인 뭐로했는지)
+
     @Builder
     public Member(String name, String nickname, String email, String password) {
         this.name = name;
