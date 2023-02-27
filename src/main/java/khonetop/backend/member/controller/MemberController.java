@@ -3,6 +3,7 @@ package khonetop.backend.member.controller;
 import khonetop.backend.member.dto.MemberSignInRequestDto;
 import khonetop.backend.member.dto.MemberSignInResponseDto;
 import khonetop.backend.member.dto.MemberSignUpRequestDto;
+import khonetop.backend.member.service.EmailServiceImpl;
 import khonetop.backend.member.service.MemberServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +23,7 @@ import java.util.Optional;
 public class MemberController {
 
     private final MemberServiceImpl memberService;
+    private final EmailServiceImpl emailService;
 
     @PostMapping("/signup/{email}")
     public ResponseEntity isDuplicateEmail(@PathVariable("email") String email) { //이메일 중복 체크
@@ -43,6 +45,15 @@ public class MemberController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
+    @GetMapping("/signup/{nickname}")
+    public ResponseEntity checkNicknameDuplicate(@PathVariable("nickname") String nickname) {
+        boolean duplicateNickname = memberService.isDuplicateNickname(nickname);
+        if (duplicateNickname) {
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
     @ResponseBody
     @PostMapping("/signin") //로그인
     public ResponseEntity signIn(@Valid @RequestBody MemberSignInRequestDto form, BindingResult bindingResult) {
@@ -56,9 +67,21 @@ public class MemberController {
         return new ResponseEntity(memberSignInResponseDto, HttpStatus.OK);
     }
 
-    @GetMapping("/signin/fail") //로그인 실패 시.. 일단 사용 안함
-    public ResponseEntity loginFail() {
-        log.info("비밀번호가 일치하지 않음");
-        return new ResponseEntity(HttpStatus.BAD_REQUEST);
+    @GetMapping("/password/{email}") //뭐로 해야할지 잘..
+    public ResponseEntity temporaryPassword(@PathVariable("email") String email) {
+        String temporaryPassword = memberService.createTemporaryPassword(email);
+        if (temporaryPassword == null) {
+            log.info("email 존재하지 않음");
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+
+        try {
+            emailService.sendTemporaryPasswordMessage(email, temporaryPassword);
+        } catch (Exception e) {
+            log.info("임시 비밀번호 email 전송 실패");
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity(HttpStatus.OK);
     }
 }

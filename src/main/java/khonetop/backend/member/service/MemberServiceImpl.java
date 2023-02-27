@@ -17,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.Random;
 
 @Slf4j
 @Service
@@ -29,10 +30,6 @@ public class MemberServiceImpl implements MemberService{ //로그인, 회원 가
 
     @Override
     public boolean signUp(MemberSignUpRequestDto request) {
-        if (isDuplicateNickname(request.getNickname())) {
-            log.info("이미 존재하는 닉네임");
-            return false;
-        }
         Member member = Member.builder().email(request.getEmail())
                 .name(request.getName())
                 .nickname(request.getNickname())
@@ -48,7 +45,7 @@ public class MemberServiceImpl implements MemberService{ //로그인, 회원 가
         try {
             Optional<Member> byEmail = memberRepository.findByEmail(request.getEmail());
             if (!byEmail.isPresent()) {
-                return null;
+                return Optional.empty();
             }
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
@@ -57,7 +54,7 @@ public class MemberServiceImpl implements MemberService{ //로그인, 회원 가
 
             return Optional.of(new MemberSignInResponseDto(byEmail.get().getName(), principal.getUsername(), byEmail.get().getNickname()));
         } catch (BadCredentialsException e) {
-            return null;
+            return Optional.empty();
         }
     }
 
@@ -81,6 +78,20 @@ public class MemberServiceImpl implements MemberService{ //로그인, 회원 가
         return false;
     }
 
+    @Override
+    public String createTemporaryPassword(String email){ //임시 비밀번호 생성
+        Optional<Member> byEmail = memberRepository.findByEmail(email);
+        if (!byEmail.isPresent()) {
+            return null;
+        }
+        String temporaryPassword = createPassword();
+        byEmail.get().updatePassword(temporaryPassword);
+        byEmail.get().encryptPassword(passwordEncoder);
+        //update
+        memberRepository.save(byEmail.get());
+
+        return temporaryPassword;
+    }
 
     public Optional<Member> findMemberByEmail(String email){
         return null;
@@ -92,5 +103,24 @@ public class MemberServiceImpl implements MemberService{ //로그인, 회원 가
 
     public Long countRepo(){
         return memberRepository.count();
+    }
+
+    private static String createPassword(){
+        StringBuffer key = new StringBuffer();
+        Random random = new Random();
+        for(int i=0;i<8;i++){ //8자리
+            int isNum = random.nextInt(2);
+            if(isNum == 1){ //숫자
+                int index = random.nextInt(10); //0~9까지 랜덤
+                key.append(index);
+            }
+            else{ //문자
+                int index = random.nextInt(26); //A~Z까지 랜덤
+                char a = (char) (index + 'A');
+                key.append(a);
+            }
+
+        }
+        return key.toString();
     }
 }

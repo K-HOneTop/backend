@@ -40,4 +40,9 @@ public class Member { //실제 DB와 연결된 member
     public void encryptPassword(PasswordEncoder passwordEncoder) {
         password = passwordEncoder.encode(password);
     }
+
+    public void updatePassword(String password){
+        this.password = password;
+
+    }
 }

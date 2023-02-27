@@ -43,6 +43,34 @@ public class EmailServiceImpl implements EmailService{ //email 인증 코드 관
         return redisUtil.getData(email).equals(code);
     }
 
+    @Override
+    public void sendTemporaryPasswordMessage(String rcv, String temporaryPassword) throws Exception {
+        MimeMessage mimeMessage = createTemporaryPasswordMessage(rcv, temporaryPassword);
+        try {
+            emailSender.send(mimeMessage);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new IllegalArgumentException(); //메일 안보내질 경우 예외처리 필요 (존재하지 않는 메일이거나..)
+        }
+    }
+
+    private MimeMessage createTemporaryPasswordMessage(String rcv, String password) throws Exception {
+        MimeMessage message = emailSender.createMimeMessage();
+
+        message.addRecipients(Message.RecipientType.TO, rcv); //보내는 대상
+        message.setSubject("임시 비밀번호"); //제목 설정
+
+        String mailMsg="";
+        mailMsg+="<div>";
+        mailMsg+="PASSWORD: <strong>";
+        mailMsg+=password;
+        mailMsg+="</strong></div>";
+
+        message.setText(mailMsg, "utf-8", "html");
+        message.setFrom(new InternetAddress("dreamseeker7777@gmail.com", "K-HOneTop")); //보내는 사람
+        return message;
+    }
+
 
     private MimeMessage createMessage(String rcv) throws Exception {
         MimeMessage message = emailSender.createMimeMessage();
@@ -57,7 +85,7 @@ public class EmailServiceImpl implements EmailService{ //email 인증 코드 관
         mailMsg+="</strong></div>";
 
         message.setText(mailMsg, "utf-8", "html");
-        message.setFrom(new InternetAddress("pepepongpo@gmail.com", "LimGaYoung")); //보내는 사람
+        message.setFrom(new InternetAddress("dreamseeker7777@gmail.com", "K-HOneTop")); //보내는 사람
         return message;
     }
 
