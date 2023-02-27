@@ -13,4 +13,6 @@ public interface MemberService {
     boolean isExistMember(String email);
     boolean isDuplicateNickname(String nickname);
 
+    String createTemporaryPassword(String email); //임시 비밀번호 생성
+
 }

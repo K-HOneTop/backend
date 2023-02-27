@@ -18,11 +18,15 @@ public class EmailController { //email 인증 코드
 
     @GetMapping("")
     @ResponseBody
-    public ResponseEntity sendMail(@RequestParam("rcv") String emailRcv) throws Exception { //email 인증 코드 보내기
+    public ResponseEntity sendMail(@RequestParam("rcv") String emailRcv) { //email 인증 코드 보내기
         //주의할 것! 구글 이메일 보내기는 1회에 100건, 하루 500건으로 제한되어 있음
         //메일 주소를 팀 공용 메일로 하나 새로 생성해서 진행하는 것이 좋을 것 같음
         log.info("rcv: "+ emailRcv);
-        emailService.sendMessage(emailRcv);
+        try {
+            emailService.sendMessage(emailRcv);
+        } catch (Exception e) { //존재하지 않는 이메일
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
         return new ResponseEntity(HttpStatus.OK);
     }
 
