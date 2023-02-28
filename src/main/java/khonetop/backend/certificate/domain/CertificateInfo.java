@@ -1,4 +1,4 @@
-package khonetop.backend.Certificate.domain;
+package khonetop.backend.certificate.domain;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

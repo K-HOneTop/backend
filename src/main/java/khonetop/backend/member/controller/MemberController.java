@@ -23,7 +23,7 @@ import java.util.Optional;
 public class MemberController {
 
     private final MemberServiceImpl memberService;
-    private final EmailServiceImpl emailService;
+    private final EmailServiceImpl emailService; //임시 비밀번호 발급을 위한 emailService
 
     @PostMapping("/signup/{email}")
     public ResponseEntity isDuplicateEmail(@PathVariable("email") String email) { //이메일 중복 체크
@@ -67,8 +67,8 @@ public class MemberController {
         return new ResponseEntity(memberSignInResponseDto, HttpStatus.OK);
     }
 
-    @GetMapping("/password/{email}") //뭐로 해야할지 잘..
-    public ResponseEntity temporaryPassword(@PathVariable("email") String email) {
+    @GetMapping("/password/{email}") //임시로 이름을 지어놨는데, 수정하시려면 수정해 주세요.
+    public ResponseEntity temporaryPassword(@PathVariable("email") String email) { //임시 비밀번호 발급
         String temporaryPassword = memberService.createTemporaryPassword(email);
         if (temporaryPassword == null) {
             log.info("email 존재하지 않음");

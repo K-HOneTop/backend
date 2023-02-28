@@ -12,7 +12,8 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/mail")
-public class EmailController { //email 인증 코드
+public class EmailController { //email 인증 코드 
+    // 보안상 중요하지 않은 것 같아서 email과 code를 RequestParam으로 넣었습니다. 
 
     private final EmailServiceImpl emailService;
 
@@ -20,7 +21,6 @@ public class EmailController { //email 인증 코드
     @ResponseBody
     public ResponseEntity sendMail(@RequestParam("rcv") String emailRcv) { //email 인증 코드 보내기
         //주의할 것! 구글 이메일 보내기는 1회에 100건, 하루 500건으로 제한되어 있음
-        //메일 주소를 팀 공용 메일로 하나 새로 생성해서 진행하는 것이 좋을 것 같음
         log.info("rcv: "+ emailRcv);
         try {
             emailService.sendMessage(emailRcv);

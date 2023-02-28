@@ -54,6 +54,7 @@ public class EmailServiceImpl implements EmailService{ //email 인증 코드 관
         }
     }
 
+    //create message 하나로 합칠것
     private MimeMessage createTemporaryPasswordMessage(String rcv, String password) throws Exception {
         MimeMessage message = emailSender.createMimeMessage();
 

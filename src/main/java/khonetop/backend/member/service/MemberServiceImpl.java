@@ -29,7 +29,7 @@ public class MemberServiceImpl implements MemberService{ //로그인, 회원 가
     private final AuthenticationManager authenticationManager;
 
     @Override
-    public boolean signUp(MemberSignUpRequestDto request) {
+    public boolean signUp(MemberSignUpRequestDto request) { //회원가입
         Member member = Member.builder().email(request.getEmail())
                 .name(request.getName())
                 .nickname(request.getNickname())
@@ -41,7 +41,7 @@ public class MemberServiceImpl implements MemberService{ //로그인, 회원 가
     }
 
     @Override
-    public Optional<MemberSignInResponseDto> signIn(MemberSignInRequestDto request) {
+    public Optional<MemberSignInResponseDto> signIn(MemberSignInRequestDto request) { //로그인
         try {
             Optional<Member> byEmail = memberRepository.findByEmail(request.getEmail());
             if (!byEmail.isPresent()) {
@@ -53,13 +53,13 @@ public class MemberServiceImpl implements MemberService{ //로그인, 회원 가
             UserDetailsImpl principal = (UserDetailsImpl) authentication.getPrincipal();
 
             return Optional.of(new MemberSignInResponseDto(byEmail.get().getName(), principal.getUsername(), byEmail.get().getNickname()));
-        } catch (BadCredentialsException e) {
+        } catch (BadCredentialsException e) { //비밀번호가 일치하지 않을 경우
             return Optional.empty();
         }
     }
 
     @Override
-    public boolean isExistMember(String email){
+    public boolean isExistMember(String email){ //user 존재 여부
         boolean isExistMember = memberRepository.existsByEmail(email);
         if (isExistMember) {
             log.info("이미 존재하는 회원");
@@ -70,7 +70,7 @@ public class MemberServiceImpl implements MemberService{ //로그인, 회원 가
 
 
     @Override
-    public boolean isDuplicateNickname(String nickname){
+    public boolean isDuplicateNickname(String nickname){ //nickname 존재 여부
         Optional<Member> member = memberRepository.findByNickname(nickname);
         if(member.isPresent()){
             return true;
@@ -99,13 +99,13 @@ public class MemberServiceImpl implements MemberService{ //로그인, 회원 가
 
     public void clearRepo(){
         memberRepository.deleteAll();
-    }
+    } //test를 위한 clear
 
     public Long countRepo(){
         return memberRepository.count();
-    }
+    } //test를 위한 count
 
-    private static String createPassword(){
+    private static String createPassword(){ //임시 비밀번호 생성
         StringBuffer key = new StringBuffer();
         Random random = new Random();
         for(int i=0;i<8;i++){ //8자리

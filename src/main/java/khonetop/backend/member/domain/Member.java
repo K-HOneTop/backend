@@ -22,12 +22,13 @@ public class Member { //실제 DB와 연결된 member
     private String email; //로그인할 때 id로 사용됨
 //    private boolean mail_auth; //회원가입 할 때 이메일 인증을 하지 않으면 가입이 안돼서 일단 뺌
     private String password;
+    
+    //추후 추가될수도 있는 기능을 위한 주석
 //    private String role; //사용자 권한
     
 //    @CreationTimestamp
 //    private Timestamp createDate; //회원가입한 날짜
-
-    //sns 추가해야 함 (sns 로그인 뭐로했는지)
+    //sns (sns 로그인 뭐로했는지)
 
     @Builder
     public Member(String name, String nickname, String email, String password) {

@@ -1,4 +1,4 @@
-package khonetop.backend.Certificate.dto;
+package khonetop.backend.certificate.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

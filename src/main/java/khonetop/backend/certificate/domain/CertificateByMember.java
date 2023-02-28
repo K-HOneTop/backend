@@ -1,4 +1,4 @@
-package khonetop.backend.Certificate.domain;
+package khonetop.backend.certificate.domain;
 
 import khonetop.backend.member.domain.Member;
 import lombok.Getter;

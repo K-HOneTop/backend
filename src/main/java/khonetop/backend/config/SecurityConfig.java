@@ -58,19 +58,6 @@ public class SecurityConfig {
                 .loginProcessingUrl("/member/signin") //form login의 자동 로그인 방식 이용함
                 .defaultSuccessUrl("/"); //로그인 성공 시 기본 url 설정
 
-
-//        http
-//                .authorizeRequests()
-//                .antMatchers().authenticated()
-//                .anyRequest().authenticated();
-//
-//        http.formLogin("/login") //로그인
-//                .loginPage("/member/signin")
-//                .usernameParameter("email")
-//                .passwordParameter("password")
-//                .loginProcessingUrl("/member/signin")
-//                .permitAll();
-
         return http.build();
     }
 

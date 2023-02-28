@@ -43,4 +43,4 @@ out/
 
 application-mail.properties
 
-test
+#test #인수인계를 위해 테스트 코드 공유합니다.
